@@ -1,0 +1,13 @@
+# Ignore NetCDF and NumPy data files
+*.nc
+*.npz
+
+# Ignore Sentinel-2 SAFE folders
+S2?_MSIL2A_*.SAFE/
+
+# Ignore AERONET folders
+LWN_Level15_All_Points_V3/
+
+# Ignore all .SAFE and similar scientific data folders
+*.SAFE/
+LWN_Level15*/   # if there are other similar AERONET datasets
