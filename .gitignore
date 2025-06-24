@@ -11,3 +11,6 @@ LWN_Level15_All_Points_V3/
 # Ignore all .SAFE and similar scientific data folders
 *.SAFE/
 LWN_Level15*/   # if there are other similar AERONET datasets
+
+# Ignore formatting files
+.DS_Store
