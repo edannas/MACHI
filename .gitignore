@@ -2,15 +2,12 @@
 *.nc
 *.npz
 
-# Ignore Sentinel-2 SAFE folders
-S2?_MSIL2A_*.SAFE/
+# Ignore Sentinel-2 and similar folders
+*.SAFE/
 
 # Ignore AERONET folders
-LWN_Level15_All_Points_V3/
-
-# Ignore all .SAFE and similar scientific data folders
-*.SAFE/
-LWN_Level15*/   # if there are other similar AERONET datasets
+LWN_Level15*/
+LWN_Level20*/
 
 # Ignore formatting files
 .DS_Store
