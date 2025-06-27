@@ -19,7 +19,7 @@ satellite = "HYPSO-1"  # Satellite name
 file = "mjosa_2024-11-28T10-35-01Z-l1d.npz"  # Input file with reflectance data
 maxIter = 200                       # Maximum number of iterations 
 epsilon = 1e-2                      # Convergence threshold
-batch_sizes = [100, 200, 300, 400]            # Batch sizes to test
+batch_size = [100, 200, 300, 400]            # Batch sizes to test
 water_pixel = (500, 400)            # Pixel to evaluate (598, 1092)
 land_pixel = (310, 780)             # Pixel to evaluate (598, 1092) (302, 546)
 crop = None                         # (y1, y2, x1, x2)
@@ -78,14 +78,14 @@ i = {}
 t = {}
 P = {}
 for h_name, h_function in kernels.items():
-    for b in batch_sizes:
+    for b in batch_size:
         key = f"b{b}_{h_name}"
         R_TOA[key], R_BOA[key], S[key], T[key], bands, i[key], t[key], P[key] = main(file_path, h=h_function, batch_size=b)
 
 # Plot 2: convergence for each kernel and all batch sizes
 fig, axs = plt.subplots(len(kernels), 1, figsize=(9, 2.5*len(kernels)), sharex=True)
 for index, h in enumerate(kernels.keys()):
-    for b in batch_sizes:
+    for b in batch_size:
         key = f'b{b}_{h}'
         axs[index].plot(np.arange(len(P[key])) / 2 * b, P[key] / b, color=color_map[h], linestyle=linestyles[f'b{b}'], label=f"{h} - Batch size {b}", linewidth=1)
         axs[index].set_xlabel("Iteration × Batch size")
@@ -98,7 +98,7 @@ plt.savefig(f"{save_folder}/convergence_batches.png", dpi=300)
 # log scale
 fig, axs = plt.subplots(len(kernels), 1, figsize=(9, 2.5*len(kernels)), sharex=True)
 for index, h in enumerate(kernels.keys()):
-    for b in batch_sizes:
+    for b in batch_size:
         key = f'b{b}_{h}'
         axs[index].plot(np.arange(len(P[key])) / 2 * b, P[key] / b, color=color_map[h], linestyle=linestyles[f'b{b}'], label=f"{h} - Batch size {b}", linewidth=1)
         axs[index].set_yscale("log")
@@ -111,9 +111,9 @@ plt.savefig(f"{save_folder}/convergence_batches_log.png", dpi=300)
 
 # Plot 3: final S and T for each kernel
 fig, axs = plt.subplots(len(kernels), 2, figsize=(9, 2.7*len(kernels)), sharex=True) # sharex='col', sharey='row'
-global_max_S = max([max(S[f"b{b}_{h}"]) for h in kernels.keys() for b in batch_sizes])
+global_max_S = max([max(S[f"b{b}_{h}"]) for h in kernels.keys() for b in batch_size])
 for index, h in enumerate(kernels.keys()):
-    for b in batch_sizes:
+    for b in batch_size:
         key = f'b{b}_{h}'
         # S
         axs[index][0].plot(bands, S[key], color=color_map[h], linestyle=linestyles[f'b{b}'], label=f"{h} - Batch size {b}", linewidth=1)
@@ -132,12 +132,12 @@ for index, h in enumerate(kernels.keys()):
 plt.tight_layout()
 plt.savefig(f"{save_folder}/final_S_T_batches.png", dpi=300)
 
-# Plot 3: BOA for each kernel and all batch sizes
+# Plot 4: BOA for each kernel and all batch sizes
 fig, axs = plt.subplots(len(kernels), 2, figsize=(9, 2.7*len(kernels)), sharex=True) # sharex='col', sharey='row'
-water_max_R_BOA = max([np.nanmax(R_BOA[f"b{b}_{h}"][water_pixel[0], water_pixel[1], :]) for h in kernels.keys() for b in batch_sizes])
-land_max_R_BOA = max([np.nanmax(R_BOA[f"b{b}_{h}"][land_pixel[0], land_pixel[1], :]) for h in kernels.keys() for b in batch_sizes])
+water_max_R_BOA = max([np.nanmax(R_BOA[f"b{b}_{h}"][water_pixel[0], water_pixel[1], :]) for h in kernels.keys() for b in batch_size])
+land_max_R_BOA = max([np.nanmax(R_BOA[f"b{b}_{h}"][land_pixel[0], land_pixel[1], :]) for h in kernels.keys() for b in batch_size])
 for index, h in enumerate(kernels.keys()):
-    for b in batch_sizes:
+    for b in batch_size:
         key = f'b{b}_{h}'
         # water pixel
         axs[index][0].plot(bands, R_BOA[key][water_pixel[0], water_pixel[1], :], color=color_map[h], linestyle=linestyles[f'b{b}'], label=f"{h} - Batch size {b}", linewidth=1)

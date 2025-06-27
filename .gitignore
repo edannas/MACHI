@@ -10,4 +10,10 @@ LWN_Level15*/
 LWN_Level20*/
 
 # Ignore formatting files
-.DS_Store
+*.DS_Store
+
+# Ignore cache files
+__pycache__
+
+Ignore plots
+*.png
