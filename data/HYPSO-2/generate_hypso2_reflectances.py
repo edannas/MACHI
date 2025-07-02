@@ -21,9 +21,12 @@ for file in os.listdir(l1a_path):
     # Generate reflectance data
     satobj_h2.generate_l1c_cube()
     satobj_h2.generate_l1d_cube()
-    l1d_cube = satobj_h2.l1d_cube[:, :, 7:-2]   # shape (Ix, Iy, N)
-    bands = satobj_h2.wavelengths[7:-2]         # shape (N,)
-  
+    l1d_cube = satobj_h2.l1d_cube[:, :, 15:-2]   # shape (Ix, Iy, N)
+    bands = satobj_h2.wavelengths[15:-2]         # shape (N,)
+
+    saturation_mask = np.flip(saturation_mask, axis=1)
+    l1d_cube = np.flip(l1d_cube, axis=1)
+
     # Save as .npz file
     out_name = os.path.join(script_dir, "ToA-reflectance", file.replace("l1a.nc", "") + "l1d.npz")
     np.savez(out_name, cube=l1d_cube, sat_mask = saturation_mask, bands=bands)

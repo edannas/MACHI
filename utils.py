@@ -30,7 +30,7 @@ def initialize_machi_params(h, R_TOA):
     Ix, Iy, N = R_TOA.shape
     I = Ix * Iy
     R_TOA_flat = R_TOA.reshape(I, N)
-    
+
     # Remove rows with NaNs from R_TOA_flat
     nan_mask = ~np.isnan(R_TOA_flat).any(axis=1)
     R_TOA_flat = R_TOA_flat[nan_mask]
@@ -38,9 +38,17 @@ def initialize_machi_params(h, R_TOA):
 
     h = h / np.sum(np.abs(h))           # Normalize kernel
     L = len(h)                          # Length of the kernel
-    S = np.min(R_TOA_flat, axis=0)      # Dark pixel subtraction
+    min_idx = np.argmin(np.sum(R_TOA_flat, axis=1))
+    S = R_TOA_flat[min_idx]             # Dark object subtraction
     tilde_T = S / (1 - S)
     tilde_h = np.flip(h)                # Define flipped kernel
+
+    # Normalize each pixel in R_TOA_flat by the total signal, scaled by the total signal for the dark pixel
+    # total_signal = np.sum(R_TOA_flat, axis=1, keepdims=True)
+    # darkpixel_total_signal = np.sum(S)
+    # ratio = total_signal / darkpixel_total_signal
+    # ratio = ratio / np.average(ratio)  # Normalize ratio to average 1
+    # R_TOA_flat = R_TOA_flat / ratio
 
     # Print initial data
     print(f"Initialized parameters: h shape {h.shape}, L {L}, S shape {S.shape}, tilde_T shape {tilde_T.shape}, tilde_h shape {tilde_h.shape}, R_TOA_flat shape {R_TOA_flat.shape}, I {I}, N {N}")

@@ -15,11 +15,11 @@ from main import main
 from utils import get_rgb, load_data, apply_saturation_mask
 
 # --------------- INPUT -----------------
-satellite = "HYPSO-1"  # Satellite name
-file = "mjosa_2024-11-28T10-35-01Z-l1d.npz"  # Input file with reflectance data
+satellite = "HYPSO-2"  # Satellite name
+file = "oslofjord_2025-06-20T10-33-03Z-l1d.npz"  # Input file with reflectance data
 maxIter = 200                       # Maximum number of iterations 
 epsilon = 1e-2                      # Convergence threshold
-batch_size = [100, 200, 300, 400]            # Batch sizes to test
+batch_size = [100, 200]            # Batch sizes to test
 water_pixel = (500, 400)            # Pixel to evaluate (598, 1092)
 land_pixel = (310, 780)             # Pixel to evaluate (598, 1092) (302, 546)
 crop = None                         # (y1, y2, x1, x2)
@@ -48,8 +48,13 @@ bands, R_TOA_uncropped, sat_mask = load_data(file_path)
 R_TOA_uncropped = apply_saturation_mask(R_TOA_uncropped, sat_mask)
 (y,x) = R_TOA_uncropped.shape[:2]
 scale = 8*1e-3
-plt.figure(figsize=(x*scale, y*scale))
-plt.imshow(np.nan_to_num(get_rgb(R_TOA_uncropped, bands), nan = 0))
+x_scale = 0.3
+plt.figure(figsize=(x*scale*x_scale, y*scale))
+plt.imshow(
+    np.nan_to_num(get_rgb(R_TOA_uncropped, bands), nan=0),
+    extent=[0, x, y, 0],  # Match image to figure size and axes
+    aspect='auto'
+)
 if crop is not None:
     y1, y2, x1, x2 = map(int, crop)  # Ensure integers
     plt.gca().add_patch(
